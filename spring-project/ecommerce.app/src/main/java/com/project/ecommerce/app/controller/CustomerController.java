@@ -1,8 +1,9 @@
 package com.project.ecommerce.app.controller;
 
+import com.project.ecommerce.app.dbo.CustomerResponse;
 import com.project.ecommerce.app.entities.Customer;
-import com.project.ecommerce.app.service.CustomerRepositoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.ecommerce.app.service.CustomerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,28 +12,25 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/customers")
+@RequiredArgsConstructor
 public class CustomerController {
-    private CustomerRepositoryService customerRepositoryService;
-
-    @Autowired
-    public CustomerController(CustomerRepositoryService customerRepositoryService) {
-        this.customerRepositoryService = customerRepositoryService;
-    }
+    private final CustomerService customerRepositoryService;
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
-        List<Customer> customers = customerRepositoryService.getAllCustomers();
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+        var customers = customerRepositoryService.getAllCustomers();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        Customer customer = customerRepositoryService.getCustomerById(id);
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
+        var customer = customerRepositoryService.getCustomerById(id);
         if (customer != null) {
             return new ResponseEntity<>(customer, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
     @PostMapping

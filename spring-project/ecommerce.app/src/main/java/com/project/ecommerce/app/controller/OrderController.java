@@ -1,10 +1,9 @@
 package com.project.ecommerce.app.controller;
 
-import com.project.ecommerce.app.entities.Order;
-import com.project.ecommerce.app.repos.OrderRepository;
+import com.project.ecommerce.app.dbo.OrderResponse;
 import com.project.ecommerce.app.request.PlaceOrderRequest;
-import com.project.ecommerce.app.service.OrderRepositoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.ecommerce.app.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/orders")
+@RequiredArgsConstructor
 public class OrderController {
-    private OrderRepositoryService orderRepositoryService;
+    private final OrderService orderRepositoryService;
 
-    @Autowired
-    public OrderController(OrderRepositoryService orderRepositoryService) {
-        this.orderRepositoryService = orderRepositoryService;
-    }
 
     @PostMapping("/place-order")
     public ResponseEntity<String> placeOrder(@RequestBody PlaceOrderRequest request) {
@@ -32,14 +28,14 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long orderId) {
-        Order order = orderRepositoryService.getOrderById(orderId);
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long orderId) {
+        var order = orderRepositoryService.getOrderById(orderId);
         return order != null ? ResponseEntity.ok(order) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<Order>> getAllOrdersForCustomer(@PathVariable Long customerId) {
-        List<Order> orders = orderRepositoryService.getAllOrdersForCustomer(customerId);
+    public ResponseEntity<List<OrderResponse>> getAllOrdersForCustomer(@PathVariable Long customerId) {
+        var orders = orderRepositoryService.getAllOrdersForCustomer(customerId);
         return orders.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(orders);
     }
 }

@@ -1,40 +1,37 @@
 package com.project.ecommerce.app.controller;
 
-import com.project.ecommerce.app.entities.Cart;
+import com.project.ecommerce.app.dbo.CartResponse;
 import com.project.ecommerce.app.request.CartCreateRequest;
 import com.project.ecommerce.app.request.CartItemRequest;
 import com.project.ecommerce.app.request.CartUpdateRequest;
 import com.project.ecommerce.app.request.RemoveProductFromCartRequest;
-import com.project.ecommerce.app.service.CartRepositoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.ecommerce.app.service.CartService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/carts")
+@RequiredArgsConstructor
 public class CartController {
-    private CartRepositoryService cartRepositoryService;
-
-    @Autowired
-    public CartController(CartRepositoryService cartRepositoryService) {
-        this.cartRepositoryService = cartRepositoryService;
-    }
+    private final CartService cartRepositoryService;
 
     @PostMapping
-    public ResponseEntity<Cart> createCart(@RequestBody CartCreateRequest cartCreateRequest) {
-        Cart createdCart = cartRepositoryService.createCart(cartCreateRequest);
+    public ResponseEntity<CartResponse> createCart(@RequestBody CartCreateRequest cartCreateRequest) {
+        var createdCart = cartRepositoryService.createCart(cartCreateRequest);
         return new ResponseEntity<>(createdCart, HttpStatus.CREATED);
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<Cart> getCartByCustomerId(@PathVariable Long customerId) {
-        Cart cart = cartRepositoryService.getCartByCustomerId(customerId);
+    public ResponseEntity<CartResponse> getCartByCustomerId(@PathVariable Long customerId) {
+        var cart = cartRepositoryService.getCartByCustomerId(customerId);
+
         if (cart != null) {
             return new ResponseEntity<>(cart, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{cartId}")

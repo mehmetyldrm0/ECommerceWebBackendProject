@@ -1,11 +1,11 @@
 package com.project.ecommerce.app.controller;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.ecommerce.app.dbo.ProductResponse;
 import com.project.ecommerce.app.entities.Product;
 import com.project.ecommerce.app.request.ProductCreateRequest;
-import com.project.ecommerce.app.service.ProductRepositoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.project.ecommerce.app.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +14,27 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/products")
+@RequiredArgsConstructor
 public class ProductController {
-    private ProductRepositoryService productRepositoryService;
-
-    @Autowired
-    public ProductController(ProductRepositoryService productRepositoryService) {
-        this.productRepositoryService = productRepositoryService;
-    }
+    private final ProductService productRepositoryService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productRepositoryService.getAllProducts();
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        var products = productRepositoryService.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productRepositoryService.getProductById(id);
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+        var product = productRepositoryService.getProductById(id);
         return product != null ? new ResponseEntity<>(product, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductCreateRequest productCreateRequest) {
-        Product createdProduct = productRepositoryService.createProduct(productCreateRequest);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreateRequest productCreateRequest) {
+        var createdProduct = productRepositoryService.createProduct(productCreateRequest);
+        return new ResponseEntity<>(createdProduct, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

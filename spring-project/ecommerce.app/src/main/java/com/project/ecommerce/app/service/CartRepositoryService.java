@@ -7,12 +7,12 @@ import com.project.ecommerce.app.request.CartUpdateRequest;
 import com.project.ecommerce.app.request.RemoveProductFromCartRequest;
 
 public interface CartRepositoryService {
-    Cart createCart(CartCreateRequest cartCreateRequest);
-    Cart getCartByCustomerId(Long customerId);
-    void updateCart(CartUpdateRequest request);
-    void emptyCart(Long cartId);
-    void addProductToCart(Long cartId, CartItemRequest request);
-    void removeProductFromCart(RemoveProductFromCartRequest request);
+    CartResponse createCart(CartCreateRequest cartCreateRequest);
+    CartResponse getCartByCustomerId(Long customerId);
+    CartResponse updateCart(CartUpdateRequest request);
+    CartResponse emptyCart(Long cartId);
+    CartResponse addProductToCart(Long cartId, CartItemRequest request);
+    CartResponse removeProductFromCart(RemoveProductFromCartRequest request);
 
 
 }
